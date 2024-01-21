@@ -15,12 +15,26 @@ import matplotlib.pyplot as plt
 from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
 from sklearn.ensemble import RandomForestClassifier 
 from sklearn.decomposition import PCA
+import argparse
 
 from utils import *
 
-types = "short"
-normalized = False
-binary_classify = True
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('--types', type=str, default="short",
+                    help='types of dataset: short or full')
+parser.add_argument('--normalized', type=bool, default=False,
+                    help='types of dataset: short or full')
+parser.add_argument('--binary_classify', type=bool, default=True,
+                    help='types of dataset: short or full')
+
+args = parser.parse_args()
+types = args.types
+normalized = args.normalized
+binary_classify = args.binary_classify
+
+# types = "short"
+# normalized = False
+# binary_classify = True
 
 data_path_unsw_train = "dataset/UNSW_NB15_training-set.csv"
 data_path_unsw_test = "dataset/UNSW_NB15_testing-set.csv"
