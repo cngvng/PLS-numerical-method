@@ -276,9 +276,9 @@ def confusion_matrix(y_test, y_pred, file_name, binary_classify, types):
                                             text_fontsize="large",
                                             figsize=(10.2, 7))
         if file_name == "RandomForestClassifier(max_depth=5, n_estimators=10)":
-            plt.savefig("../plots/Randomforest/binary/"   + file_name + types  +".pdf")
+            plt.savefig("plots/Randomforest/binary/"   + file_name + types  +".pdf")
         else:
-            plt.savefig("../plots/Decisiontree/binary/"   + file_name + types +".pdf")
+            plt.savefig("plots/Decisiontree/binary/"   + file_name + types +".pdf")
     else:
         skplt.metrics.plot_confusion_matrix(y_test, y_pred,
                                             normalize=False,
@@ -288,9 +288,9 @@ def confusion_matrix(y_test, y_pred, file_name, binary_classify, types):
                                             text_fontsize="large",
                                             figsize=(10.2, 7))
         if file_name == "RandomForestClassifier(max_depth=5, n_estimators=10)":
-            plt.savefig("../plots/Randomforest/multiple/" + types  + file_name + ".pdf")
+            plt.savefig("plots/Randomforest/multiple/" + types  + file_name + ".pdf")
         else:
-            plt.savefig("../plots/Decisiontree/multiple/" + types  + file_name + ".pdf")  
+            plt.savefig("plots/Decisiontree/multiple/" + types  + file_name + ".pdf")  
             
 def visualize_data(df):
     # Plotting target label distribution

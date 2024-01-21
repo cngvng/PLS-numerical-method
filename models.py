@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Oct 20 10:03:41 2022
 
 @author: cngvng
 """
@@ -23,8 +22,8 @@ types = "short"
 normalized = False
 binary_classify = True
 
-data_path_unsw_train = "dataset/UNSW/UNSW_NB15_training-set.csv"
-data_path_unsw_test = "dataset/UNSW/UNSW_NB15_testing-set.csv"
+data_path_unsw_train = "dataset/UNSW_NB15_training-set.csv"
+data_path_unsw_test = "dataset/UNSW_NB15_testing-set.csv"
 
 n_compnents = 16
 normalized = True
@@ -82,7 +81,7 @@ y_pred = classifier.predict(X_test)
 time_predict_end = time.process_time()
 time_predict = (time_predict_end - time_predict_start) / len(y_test)
 
-display_results(y_test=y_test, y_pred=y_pred, time_train=time_train, time_predict=time_predict)
+display_results(y_test=y_test, y_pred=y_pred, run_time=time_predict)
 
 y_pred = pd.DataFrame(y_pred)
 file_name = str(classifier) # for save figure
