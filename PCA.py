@@ -11,8 +11,11 @@ import time
 import scikitplot as skplt
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.linear_model import LinearRegression
+
+from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
+from sklearn.ensemble import RandomForestClassifier 
 from sklearn.decomposition import PCA
+
 from utils import *
 
 types = "short"
@@ -24,7 +27,7 @@ data_path_unsw_test = "dataset/UNSW_NB15_testing-set.csv"
 
 n_compnents = 16
 normalized = True
-binary_classify = True
+binary_classify = False
 label = False  # label=False for Feature Extraction
 
 """ Processing train data and test data for pca """
@@ -50,7 +53,8 @@ X_train = np.dot(U.T, X_hat.T).T
 
 
 """Training procedure"""
-classifier = LinearRegression()
+# classifier = DecisionTreeClassifier(random_state=77)
+classifier = RandomForestClassifier(max_depth=5, random_state=77)
 
 time_train_start = time.process_time()
 classifier.fit(X_train, y_train)
@@ -82,4 +86,4 @@ display_results(y_test=y_test, y_pred=y_pred, run_time=time_predict)
 y_pred = pd.DataFrame(y_pred)
 file_name = str(classifier) # for save figure
 
-confusion_matrix(y_test=y_test, y_pred=y_pred, binary_classify=binary_classify, types=types)
+confusion_matrix(y_test=y_test, y_pred=y_pred, binary_classify=binary_classify, file_name=file_name, types=types)

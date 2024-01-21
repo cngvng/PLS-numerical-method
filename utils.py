@@ -268,7 +268,16 @@ def align_test_dataset(data_test, data_train):
 
 """Utils function for plot"""
 
-def confusion_matrix(y_test, y_pred, binary_classify, types):
+def confusion_matrix(y_test, y_pred, file_name, binary_classify, types):
+    import os
+    if not os.path.exists("plots/Decisiontree/binary/"):
+        os.makedirs("plots/Decisiontree/binary/")
+    if not os.path.exists("plots/Decisiontree/multiple/"):
+        os.makedirs("plots/Decisiontree/multiple/")
+    if not os.path.exists("plots/Randomforest/binary/"):
+        os.makedirs("plots/Randomforest/binary/")
+    if not os.path.exists("plots/Randomforest/multiple/"):
+        os.makedirs("plots/Randomforest/multiple/")
     if binary_classify:
         skplt.metrics.plot_confusion_matrix(y_test, y_pred,
                                             normalize=False,
@@ -276,9 +285,10 @@ def confusion_matrix(y_test, y_pred, binary_classify, types):
                                             cmap="Blues",
                                             text_fontsize="large",
                                             figsize=(10.2, 7))
-        if not os.path.exists("plots/binary/"):
-            os.makedirs("plots/binary/")
-        plt.savefig("plots/binary/" +types +".pdf")
+        if file_name[:22] == "RandomForestClassifier":
+            plt.savefig("plots/Randomforest/binary/"   + file_name + types  +".pdf")
+        else:
+            plt.savefig("plots/Decisiontree/binary/"   + file_name + types +".pdf")
     else:
         skplt.metrics.plot_confusion_matrix(y_test, y_pred,
                                             normalize=False,
