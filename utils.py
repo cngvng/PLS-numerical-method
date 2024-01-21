@@ -10,9 +10,6 @@ from os import path
 from sklearn import metrics
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import MinMaxScaler
-
-import scikitplot as skplt
-import seaborn as sns
 import matplotlib.pyplot as plt
 
 
@@ -267,30 +264,7 @@ def align_test_dataset(data_test, data_train):
 
 """Utils function for plot"""
 
-def confusion_matrix(y_test, y_pred, file_name, binary_classify, types):
-    if binary_classify:
-        skplt.metrics.plot_confusion_matrix(y_test, y_pred,
-                                            normalize=False,
-                                            title=" ",
-                                            cmap="Blues",
-                                            text_fontsize="large",
-                                            figsize=(10.2, 7))
-        if file_name == "RandomForestClassifier(max_depth=5, n_estimators=10)":
-            plt.savefig("plots/Randomforest/binary/"   + file_name + types  +".pdf")
-        else:
-            plt.savefig("plots/Decisiontree/binary/"   + file_name + types +".pdf")
-    else:
-        skplt.metrics.plot_confusion_matrix(y_test, y_pred,
-                                            normalize=False,
-                                            x_tick_rotation=10,
-                                            title=" ",
-                                            cmap="Purples",
-                                            text_fontsize="large",
-                                            figsize=(10.2, 7))
-        if file_name == "RandomForestClassifier(max_depth=5, n_estimators=10)":
-            plt.savefig("plots/Randomforest/multiple/" + types  + file_name + ".pdf")
-        else:
-            plt.savefig("plots/Decisiontree/multiple/" + types  + file_name + ".pdf")  
+ 
             
 def visualize_data(df):
     # Plotting target label distribution
