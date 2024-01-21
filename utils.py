@@ -284,7 +284,7 @@ def confusion_matrix(y_test, y_pred, file_name, binary_classify, types):
                                             cmap="Blues",
                                             text_fontsize="large",
                                             figsize=(10.2, 7))
-        if file_name == "RandomForestClassifier(max_depth=5, n_estimators=10)":
+        if file_name[:22] == "RandomForestClassifier":
             plt.savefig("plots/Randomforest/binary/"   + file_name + types  +".pdf")
         else:
             plt.savefig("plots/Decisiontree/binary/"   + file_name + types +".pdf")
