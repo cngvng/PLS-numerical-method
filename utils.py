@@ -268,6 +268,15 @@ def align_test_dataset(data_test, data_train):
 """Utils function for plot"""
 
 def confusion_matrix(y_test, y_pred, file_name, binary_classify, types):
+    import os
+    if not os.path.exists("plots/Decisiontree/binary/"):
+        os.makedirs("plots/Decisiontree/binary/")
+    if not os.path.exists("plots/Decisiontree/multiple/"):
+        os.makedirs("plots/Decisiontree/multiple/")
+    if not os.path.exists("plots/Randomforest/binary/"):
+        os.makedirs("plots/Randomforest/binary/")
+    if not os.path.exists("plots/Randomforest/multiple/"):
+        os.makedirs("plots/Randomforest/multiple/")
     if binary_classify:
         skplt.metrics.plot_confusion_matrix(y_test, y_pred,
                                             normalize=False,
