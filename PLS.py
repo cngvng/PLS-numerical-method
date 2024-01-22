@@ -48,39 +48,26 @@ time_train_start = time.process_time()
 y_train = data_train['label']
 data_train = data_train.drop(columns=['label'])
 
-# feature extraction using PLSRegression
+regressor = PLSRegression(n_components=1)
+regressor.fit(data_train, y_train)
 
-pls = PLSRegression(n_components=n_compnents)
-pls.fit(data_train, y_train)
-X_train = pls.transform(data_train)
-
-"""Training procedure"""
-# classifier = DecisionTreeClassifier(random_state=77)
-classifier = RandomForestClassifier(max_depth=5, random_state=77)
-
-time_train_start = time.process_time()
-classifier.fit(X_train, y_train)
-
-time_train_end = time.process_time()
-
-""" Processing test data """
 # ==>process testing data
 data_test = preprocessing_data_unsw(data_path=data_path_unsw_test, normalized=normalized,
                                     binary_classify=binary_classify)
-
 y_test = data_test['label']
 data_test = data_test.drop(columns=['label'])
 data_test = align_test_dataset(data_test, data_train)
 
-time_predict_start = time.process_time()
-X_test = pls.transform(data_test)
-y_pred = classifier.predict(X_test)
-time_predict_end = time.process_time()
-time_predict = time_predict_end - time_predict_start/len(y_pred)
+""" Predicting """
+time_test_start = time.process_time()
+y_pred = regressor.predict(data_test)
+time_test_end = time.process_time()
+time_test = time_test_end - time_test_start
 
-display_results(y_test, y_pred, time_predict)
+display_results(y_test, y_pred, run_time=time_test)
 
+print(y_pred.shape)
 y_pred = pd.DataFrame(y_pred)
-file_name = str(classifier)+ str(PLSRegression.__name__)
+file_name = str(regressor.__class__.__name__) + str(PLSRegression.__name__)
 
-confusion_matrix(y_test, y_pred, binary_classify=binary_classify, file_name = file_name, types=types)
+confusion_matrix(y_test, y_pred, binary_classify=binary_classify, file_name=file_name, types=types)

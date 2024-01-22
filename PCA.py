@@ -61,25 +61,24 @@ pcr.fit(data_train, y_train)
 pca = pcr.named_steps['pca']
 
 # # feature extraction using PCA
-# X = data_train.to_numpy()
-# X_mean = np.mean(X, axis=0)
-# X_hat = X - X_mean
+X = data_train.to_numpy()
+X_mean = np.mean(X, axis=0)
+X_hat = X - X_mean
 
-# pca = PCA(n_components=n_compnents)
-# pca.fit(data_train)
-# U = pca.components_.T
+pca = PCA(n_components=n_compnents)
+pca.fit(data_train)
+U = pca.components_.T
 
-# X_train = np.dot(U.T, X_hat.T).T
+X_train = np.dot(U.T, X_hat.T).T
 
-X_train = pca.transform(data_train)
+# X_train = pca.transform(data_train)
 
 
 """Training procedure"""
-# classifier = DecisionTreeClassifier(random_state=77)
-classifier = RandomForestClassifier(max_depth=5, random_state=77)
+regressor = LinearRegression()
 
 time_train_start = time.process_time()
-classifier.fit(X_train, y_train)
+regressor.fit(X_train, y_train)
 time_train_end = time.process_time()
 time_train = time_train_end - time_train_start
 
@@ -94,19 +93,16 @@ data_test = align_test_dataset(data_test, data_train)
 time_predict_start = time.process_time()
 # X_test = np.dot(U.T, (data_test.to_numpy() - X_mean).T).T
 X_test = pca.transform(data_test)
-y_pred = classifier.predict(X_test)
-time_predict_end = time.process_time()
-time_predict = (time_predict_end - time_predict_start) / len(y_test)
 # end testing phase
 
 "==>predict and print results"
-y_pred = classifier.predict(X_test)
+y_pred = regressor.predict(X_test)
 time_predict_end = time.process_time()
 time_predict = (time_predict_end - time_predict_start) / len(y_test)
 
 display_results(y_test=y_test, y_pred=y_pred, run_time=time_predict)
-
+print(y_pred.shape)
 y_pred = pd.DataFrame(y_pred)
-file_name = str(classifier) + str(PCA.__name__) # for save figure
+file_name = str(regressor.__class__.__name__) + str(PCA.__name__) # for save figure
 
 confusion_matrix(y_test=y_test, y_pred=y_pred, binary_classify=binary_classify, file_name=file_name, types=types)

@@ -22,8 +22,11 @@ def display_results(y_test, y_pred, run_time):
     Display performance metrics of machine learning models
     """
     for i in range(len(y_pred)):
-        y_pred[i] = int(round(y_pred[i]))  # just in case linear regression is used
-
+        if type(y_pred[i]) == np.float64:
+            y_pred[i] = int(round(y_pred[i]))
+              # just in case linear regression is used
+        else:
+            y_pred[i] = int(y_pred[i])
     # print("Mean Absolute Error - ", metrics.mean_absolute_error(y_test, y_pred))
     # print("Mean Squared Error - ", metrics.mean_squared_error(y_test, y_pred))
     # print("Root Mean Squared Error - ", np.sqrt(metrics.mean_squared_error(y_test, y_pred)))
@@ -269,14 +272,11 @@ def align_test_dataset(data_test, data_train):
 
 def confusion_matrix(y_test, y_pred, file_name, binary_classify, types):
     import os
-    if not os.path.exists("plots/Decisiontree/binary/"):
-        os.makedirs("plots/Decisiontree/binary/")
-    if not os.path.exists("plots/Decisiontree/multiple/"):
-        os.makedirs("plots/Decisiontree/multiple/")
-    if not os.path.exists("plots/Randomforest/binary/"):
-        os.makedirs("plots/Randomforest/binary/")
-    if not os.path.exists("plots/Randomforest/multiple/"):
-        os.makedirs("plots/Randomforest/multiple/")
+    file_name = str(file_name)
+    if not os.path.exists(f"plots/{file_name}/binary/"):
+        os.makedirs(f"plots/{file_name}/binary/")
+    if not os.path.exists(f"plots/{file_name}/multiple/"):
+        os.makedirs(f"plots/{file_name}/multiple/")
     if binary_classify:
         skplt.metrics.plot_confusion_matrix(y_test, y_pred,
                                             normalize=False,
@@ -284,10 +284,10 @@ def confusion_matrix(y_test, y_pred, file_name, binary_classify, types):
                                             cmap="Blues",
                                             text_fontsize="large",
                                             figsize=(10.2, 7))
-        if file_name == "RandomForestClassifier(max_depth=5, n_estimators=10)":
-            plt.savefig("plots/Randomforest/binary/"   + file_name + types  +".pdf")
+        if file_name[:22] == "RandomForestClassifier":
+            plt.savefig(f"plots/{file_name}/binary/"   + file_name + types  +".pdf")
         else:
-            plt.savefig("plots/Decisiontree/binary/"   + file_name + types +".pdf")
+            plt.savefig(f"plots/{file_name}/binary/"   + file_name + types +".pdf")
     else:
         skplt.metrics.plot_confusion_matrix(y_test, y_pred,
                                             normalize=False,
@@ -297,9 +297,9 @@ def confusion_matrix(y_test, y_pred, file_name, binary_classify, types):
                                             text_fontsize="large",
                                             figsize=(10.2, 7))
         if file_name == "RandomForestClassifier(max_depth=5, n_estimators=10)":
-            plt.savefig("plots/Randomforest/multiple/" + types  + file_name + ".pdf")
+            plt.savefig(f"plots/{file_name}/multiple/" + types  + file_name + ".pdf")
         else:
-            plt.savefig("plots/Decisiontree/multiple/" + types  + file_name + ".pdf")  
+            plt.savefig(f"plots/{file_name}/multiple/" + types  + file_name + ".pdf")  
             
 def visualize_data(df):
     # Plotting target label distribution
