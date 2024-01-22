@@ -12,14 +12,13 @@ import scikitplot as skplt
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
-from sklearn.ensemble import RandomForestClassifier 
+from sklearn.linear_model import LinearRegression
 from sklearn.decomposition import PCA
 
 from utils import *
 
 types = "short"
-normalized = False
+normalized = True
 binary_classify = True
 
 data_path_unsw_train = "dataset/UNSW_NB15_training-set.csv"
@@ -53,8 +52,7 @@ X_train = np.dot(U.T, X_hat.T).T
 
 
 """Training procedure"""
-# classifier = DecisionTreeClassifier(random_state=77)
-classifier = RandomForestClassifier(max_depth=5, random_state=77)
+classifier = LinearRegression()
 
 time_train_start = time.process_time()
 classifier.fit(X_train, y_train)
@@ -86,4 +84,4 @@ display_results(y_test=y_test, y_pred=y_pred, run_time=time_predict)
 y_pred = pd.DataFrame(y_pred)
 file_name = str(classifier) # for save figure
 
-confusion_matrix(y_test=y_test, y_pred=y_pred, binary_classify=binary_classify, file_name=file_name, types=types)
+confusion_matrix(y_test=y_test, y_pred=y_pred, binary_classify=binary_classify, types=types)
