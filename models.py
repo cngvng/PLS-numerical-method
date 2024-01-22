@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+
+@author: cngvng
+"""
+
 import pandas as pd
 import numpy as np
 import time
@@ -8,27 +14,13 @@ import matplotlib.pyplot as plt
 
 from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
 from sklearn.ensemble import RandomForestClassifier 
-from sklearn.cross_decomposition import PLSRegression
-import argparse
+from sklearn.decomposition import PCA
 
 from utils import *
 
-parser = argparse.ArgumentParser(description='Process some integers.')
-parser.add_argument('--types', type=str, default="short",
-                    help='types of dataset: short or full')
-parser.add_argument('--normalized', type=bool, default=False,
-                    help='types of dataset: short or full')
-parser.add_argument('--binary_classify', type=bool, default=True,
-                    help='types of dataset: short or full')
-
-args = parser.parse_args()
-types = args.types
-normalized = args.normalized
-binary_classify = args.binary_classify
-
-# types = "short"
-# normalized = False
-# binary_classify = True
+types = "short"
+normalized = False
+binary_classify = True
 
 data_path_unsw_train = "dataset/UNSW_NB15_training-set.csv"
 data_path_unsw_test = "dataset/UNSW_NB15_testing-set.csv"
@@ -48,11 +40,17 @@ time_train_start = time.process_time()
 y_train = data_train['label']
 data_train = data_train.drop(columns=['label'])
 
-# feature extraction using PLSRegression
+# feature extraction using PCA
+X = data_train.to_numpy()
+X_mean = np.mean(X, axis=0)
+X_hat = X - X_mean
 
-pls = PLSRegression(n_components=n_compnents)
-pls.fit(data_train, y_train)
-X_train = pls.transform(data_train)
+pca = PCA(n_components=n_compnents)
+pca.fit(data_train)
+U = pca.components_.T
+
+X_train = np.dot(U.T, X_hat.T).T
+
 
 """Training procedure"""
 # classifier = DecisionTreeClassifier(random_state=77)
@@ -60,27 +58,32 @@ classifier = RandomForestClassifier(max_depth=5, random_state=77)
 
 time_train_start = time.process_time()
 classifier.fit(X_train, y_train)
-
 time_train_end = time.process_time()
+time_train = time_train_end - time_train_start
 
-""" Processing test data """
+print("==>start testing phase")
 # ==>process testing data
 data_test = preprocessing_data_unsw(data_path=data_path_unsw_test, normalized=normalized,
                                     binary_classify=binary_classify)
-
 y_test = data_test['label']
 data_test = data_test.drop(columns=['label'])
 data_test = align_test_dataset(data_test, data_train)
 
 time_predict_start = time.process_time()
-X_test = pls.transform(data_test)
+X_test = np.dot(U.T, (data_test.to_numpy() - X_mean).T).T
 y_pred = classifier.predict(X_test)
 time_predict_end = time.process_time()
-time_predict = time_predict_end - time_predict_start/len(y_pred)
+time_predict = (time_predict_end - time_predict_start) / len(y_test)
+# end testing phase
 
-display_results(y_test, y_pred, time_predict)
+"==>predict and print results"
+y_pred = classifier.predict(X_test)
+time_predict_end = time.process_time()
+time_predict = (time_predict_end - time_predict_start) / len(y_test)
+
+display_results(y_test=y_test, y_pred=y_pred, run_time=time_predict)
 
 y_pred = pd.DataFrame(y_pred)
-file_name = str(classifier)+ str(PLSRegression.__name__)
+file_name = str(classifier) # for save figure
 
-confusion_matrix(y_test, y_pred, binary_classify=binary_classify, file_name = file_name, types=types)
+confusion_matrix(y_test=y_test, y_pred=y_pred, binary_classify=binary_classify, file_name=file_name, types=types)

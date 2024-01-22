@@ -14,7 +14,6 @@ from sklearn.preprocessing import MinMaxScaler
 import scikitplot as skplt
 import seaborn as sns
 import matplotlib.pyplot as plt
-import os
 
 
 
@@ -269,15 +268,6 @@ def align_test_dataset(data_test, data_train):
 """Utils function for plot"""
 
 def confusion_matrix(y_test, y_pred, file_name, binary_classify, types):
-    import os
-    if not os.path.exists("plots/Decisiontree/binary/"):
-        os.makedirs("plots/Decisiontree/binary/")
-    if not os.path.exists("plots/Decisiontree/multiple/"):
-        os.makedirs("plots/Decisiontree/multiple/")
-    if not os.path.exists("plots/Randomforest/binary/"):
-        os.makedirs("plots/Randomforest/binary/")
-    if not os.path.exists("plots/Randomforest/multiple/"):
-        os.makedirs("plots/Randomforest/multiple/")
     if binary_classify:
         skplt.metrics.plot_confusion_matrix(y_test, y_pred,
                                             normalize=False,
@@ -285,7 +275,7 @@ def confusion_matrix(y_test, y_pred, file_name, binary_classify, types):
                                             cmap="Blues",
                                             text_fontsize="large",
                                             figsize=(10.2, 7))
-        if file_name[:22] == "RandomForestClassifier":
+        if file_name == "RandomForestClassifier(max_depth=5, n_estimators=10)":
             plt.savefig("plots/Randomforest/binary/"   + file_name + types  +".pdf")
         else:
             plt.savefig("plots/Decisiontree/binary/"   + file_name + types +".pdf")
@@ -297,9 +287,10 @@ def confusion_matrix(y_test, y_pred, file_name, binary_classify, types):
                                             cmap="Purples",
                                             text_fontsize="large",
                                             figsize=(10.2, 7))
-        if not os.path.exists("plots/multi/"):
-            os.makedirs("plots/multi/")
-        plt.savefig("plots/multi/" +types +".pdf")
+        if file_name == "RandomForestClassifier(max_depth=5, n_estimators=10)":
+            plt.savefig("plots/Randomforest/multiple/" + types  + file_name + ".pdf")
+        else:
+            plt.savefig("plots/Decisiontree/multiple/" + types  + file_name + ".pdf")  
             
 def visualize_data(df):
     # Plotting target label distribution
@@ -321,4 +312,3 @@ def visualize_data(df):
     plt.ylabel("Count")
     plt.legend()
     plt.savefig("../plots/visualize/multi-class distribution of dataset")
-    
