@@ -1,8 +1,3 @@
-"""Online Partial Least Squares (OLPLS)."""
-
-# Author: Artur Jordao <arturjlcorreia@gmail.com>
-#         Artur Jordao
-
 import numpy as np
 from scipy import linalg
 
