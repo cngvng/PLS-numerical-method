@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
 from sklearn.ensemble import RandomForestClassifier 
 from sklearn.decomposition import PCA
+from sklearn.pipeline import make_pipeline
+from sklearn. linear_model import LinearRegression
 import argparse
 
 from utils import *
@@ -22,7 +24,7 @@ from utils import *
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument('--types', type=str, default="short",
                     help='types of dataset: short or full')
-parser.add_argument('--normalized', type=bool, default=False,
+parser.add_argument('--normalized', type=bool, default=True,
                     help='types of dataset: short or full')
 parser.add_argument('--binary_classify', type=bool, default=True,
                     help='types of dataset: short or full')
@@ -40,8 +42,8 @@ data_path_unsw_train = "dataset/UNSW_NB15_training-set.csv"
 data_path_unsw_test = "dataset/UNSW_NB15_testing-set.csv"
 
 n_compnents = 16
-normalized = True
-binary_classify = False
+# normalized = True
+# binary_classify = False
 label = False  # label=False for Feature Extraction
 
 """ Processing train data and test data for pca """
@@ -54,16 +56,22 @@ time_train_start = time.process_time()
 y_train = data_train['label']
 data_train = data_train.drop(columns=['label'])
 
-# feature extraction using PCA
-X = data_train.to_numpy()
-X_mean = np.mean(X, axis=0)
-X_hat = X - X_mean
+pcr = make_pipeline(PCA(n_components=n_compnents), LinearRegression())
+pcr.fit(data_train, y_train)
+pca = pcr.named_steps['pca']
 
-pca = PCA(n_components=n_compnents)
-pca.fit(data_train)
-U = pca.components_.T
+# # feature extraction using PCA
+# X = data_train.to_numpy()
+# X_mean = np.mean(X, axis=0)
+# X_hat = X - X_mean
 
-X_train = np.dot(U.T, X_hat.T).T
+# pca = PCA(n_components=n_compnents)
+# pca.fit(data_train)
+# U = pca.components_.T
+
+# X_train = np.dot(U.T, X_hat.T).T
+
+X_train = pca.transform(data_train)
 
 
 """Training procedure"""
@@ -84,7 +92,8 @@ data_test = data_test.drop(columns=['label'])
 data_test = align_test_dataset(data_test, data_train)
 
 time_predict_start = time.process_time()
-X_test = np.dot(U.T, (data_test.to_numpy() - X_mean).T).T
+# X_test = np.dot(U.T, (data_test.to_numpy() - X_mean).T).T
+X_test = pca.transform(data_test)
 y_pred = classifier.predict(X_test)
 time_predict_end = time.process_time()
 time_predict = (time_predict_end - time_predict_start) / len(y_test)

@@ -16,7 +16,7 @@ from utils import *
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument('--types', type=str, default="short",
                     help='types of dataset: short or full')
-parser.add_argument('--normalized', type=bool, default=False,
+parser.add_argument('--normalized', type=bool, default=True,
                     help='types of dataset: short or full')
 parser.add_argument('--binary_classify', type=bool, default=True,
                     help='types of dataset: short or full')
@@ -34,8 +34,8 @@ data_path_unsw_train = "dataset/UNSW_NB15_training-set.csv"
 data_path_unsw_test = "dataset/UNSW_NB15_testing-set.csv"
 
 n_compnents = 16
-normalized = True
-binary_classify = False
+# normalized = True
+# binary_classify = False
 label = False  # label=False for Feature Extraction
 
 """ Processing train data and test data for pca """
