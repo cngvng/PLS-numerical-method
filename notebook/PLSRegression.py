@@ -74,14 +74,38 @@ plt.scatter(X_test[:,0], y_pred, label='Predicted Data')
 plt.show()
 
 from sklearn.cross_decomposition import PLSRegression
-pls = PLSRegression(n_components=1)
-pls.fit(X_train, y_train)
-y_pred = pls.predict(X_test)
-print('R2 score: ', r2_score(y_test, y_pred))
-print('MSE: ', mean_squared_error(y_test, y_pred))
+pls_sklearn = PLSRegression(n_components=1)
+pls_sklearn.fit(X_train, y_train)
+y_pred_sklearn = pls_sklearn.predict(X_test)
+print('R2 score: ', r2_score(y_test, y_pred_sklearn))
+print('MSE: ', mean_squared_error(y_test, y_pred_sklearn))
 
 # plot the fit line
 plt.scatter(X_test[:,0], y_test, label='Test Data')
 plt.scatter(X_test[:,0], y_pred, label='Predicted Data')
 plt.show()
+
+fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+ax[0].scatter(X_train[:, 0], y_train, label='Train Data')
+ax[0].scatter(X_test[:, 0], y_test, label='Test Data')
+ax[0].set_title('Original Data')
+ax[0].legend()
+
+ax[1].scatter(X_train[:, 0], pls.predict(X_train), label='Train Data')
+ax[1].scatter(X_test[:, 0], pls.predict(X_test), label='Test Data')
+ax[1].set_title('PLS Regression')
+ax[1].legend()
+plt.show()
+
+fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+ax[0].scatter(X_test[:, 0], y_test, label='Test Data')
+ax[0].scatter(X_test[:, 0], y_pred, label='Predicted Data')
+ax[0].set_title('PLS Regression from scratch')
+
+ax[1].scatter(X_test[:, 0], y_test, label='Test Data')
+ax[1].scatter(X_test[:, 0], y_pred_sklearn, label='Predicted Data')
+ax[1].set_title('PLS Regression from sklearn')
+plt.show()
+
+
 
