@@ -28,11 +28,12 @@ X_test = scaler.transform(X_test)
 y_train = scaler.fit_transform(y_train.reshape(-1, 1))
 y_test = scaler.transform(y_test.reshape(-1, 1))
 
+
 class PLSRegression():
     def __init__(self, n_components):
         self.n_components = n_components
 
-    def fit(self, X, y):
+    def _fit_cvxpy(self, X, y):
         import cvxpy as cp
         self.w = cp.Variable((X.shape[1], 1))
         loss = cp.sum_squares(X @ self.w - y)
@@ -44,6 +45,40 @@ class PLSRegression():
         prob.solve()
         self.w = self.w.value
         return self
+
+    def fit(self, X, y, method='cvxpy'):
+        if method == 'cvxpy':
+            return self._fit_cvxpy(X, y)
+        else:
+            n_samples, n_features = X.shape
+            n_components = self.n_components
+            w = np.zeros((n_features, n_components))
+            c = np.zeros((n_components, 1))
+            t = np.zeros((n_samples, n_components))
+            p = np.zeros((n_features, n_components))
+            q = np.zeros((n_features, n_components))
+            b = np.zeros((n_components, 1))
+            u = np.zeros((n_samples, n_components))
+            w_old = w.copy()
+            c_old = c.copy()
+            t_old = t.copy()
+            p_old = p.copy()
+            q_old = q.copy()
+            b_old = b.copy()
+            u_old = u.copy()
+            for i in range(n_components):
+                t[:, i] = X @ w[:, i] + u[:, i]
+                p[:, i] = X.T @ t[:, i] / (t[:, i].T @ t[:, i])
+                p[:, i] = p[:, i] / np.linalg.norm(p[:, i])
+                q[:, i] = y.T @ t[:, i] / (t[:, i].T @ t[:, i])
+                w[:, i] = X.T @ p[:, i]
+                u[:, i] = t[:, i] - X @ w[:, i]
+                b[i] = t[:, i].T @ u[:, i] / (t[:, i].T @ t[:, i])
+                t[:, i] = t[:, i] + b[i] * u[:, i]
+                c[i] = t[:, i].T @ y / (t[:, i].T @ t[:, i])
+                w[:, i] = w[:, i] + p[:, i] * (c[i] - b[i])
+            self.w = w
+            return self
 
     def predict(self, X):
         return X @ self.w
@@ -106,6 +141,8 @@ ax[1].scatter(X_test[:, 0], y_test, label='Test Data')
 ax[1].scatter(X_test[:, 0], y_pred_sklearn, label='Predicted Data')
 ax[1].set_title('PLS Regression from sklearn')
 plt.show()
+
+# Path: notebook/PLSRegression.py
 
 
 
