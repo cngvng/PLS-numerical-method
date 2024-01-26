@@ -11,7 +11,7 @@ pca = PCA(n_components=2)
 pca.fit(X)
 
 y = X.dot(pca.components_[1] + 0.1 * rng.randn(2)) + 0.3 * rng.randn(n_samples)
-print(X.shape, y.shape)
+# print(X.shape, y.shape)
 
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=rng)
@@ -42,7 +42,7 @@ class PLSRegression():
                       cp.norm(self.w, 1) <= self.n_components]
         objective = cp.Minimize(loss + reg)
         prob = cp.Problem(objective, constraint)
-        prob.solve()
+        prob.solve(solver=cp.SCS)
         self.w = self.w.value
         return self
 

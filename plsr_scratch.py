@@ -23,10 +23,13 @@ data_train = preprocessing_data_unsw(data_path=data_path_unsw_train, normalized=
 
 y_train = data_train['label']
 data_train = data_train.drop(columns=['label'])
-
 # feature extraction using PLS
 pls = PLSRegression(n_components=n_components)
 X_train = data_train.to_numpy()
+print(X_train.shape, y_train.shape)
+y_train = y_train.to_numpy()
+
+y_train = y_train.reshape(-1, 1)
 pls.fit(X_train, y_train)
 X_train = pls.transform(X_train)
 
@@ -40,9 +43,11 @@ data_test = preprocessing_data_unsw(data_path=data_path_unsw_test, normalized=no
 y_test = data_test['label']
 data_test = data_test.drop(columns=['label'])
 data_test = align_test_dataset(data_test, data_train)
+y_test = y_test.to_numpy()
+y_test = y_test.reshape(-1, 1)
+
 
 X_test = data_test.to_numpy()
-# X_test = pls.transform(X_test)
 print("======= Start Testing ======")
 y_pred = pls.predict(X_test)
 
